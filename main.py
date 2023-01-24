@@ -41,6 +41,8 @@ class player:
     def __init__(self, x, y, size):
         self.x = x
         self.y = y
+        self.vx = 0
+        self.vy = 0
         self.size = size
         self.speed = 0.6
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -53,14 +55,18 @@ class player:
 
     def movement(self, dt):
         keys = pygame.key.get_pressed()
+        self.vx = 0
+        self.vy = 0
         if keys[pygame.K_w]:
-            self.y -= self.speed * dt
+            self.vy = -self.speed * dt
         if keys[pygame.K_s]:
-            self.y += self.speed * dt
+            self.vy = self.speed * dt
         if keys[pygame.K_a]:
-            self.x -= self.speed * dt
+            self.vx = -self.speed * dt
         if keys[pygame.K_d]:
-            self.x += self.speed * dt
+            self.vx = self.speed * dt
+        self.x += self.vx
+        self.y += self.vy
         self.updateRect()
 
 
@@ -107,6 +113,8 @@ def draw_tiles():
     for tile in tile_list:
         pygame.draw.rect(win, pygame.Color('green'), pygame.Rect(tile[0]*tile_size, tile[1]*tile_size, tile_size, tile_size))
 
+def tile_collision():
+    pass
 
 player1 = player(200, 200, 50)
 log1 = log(300, 300, 50)
