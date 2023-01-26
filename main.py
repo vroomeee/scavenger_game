@@ -3,6 +3,7 @@ import pygame
 import sys
 import math
 import handle_x
+from random import randint
 
 pygame.init()
 pygame.font.init()
@@ -23,6 +24,7 @@ tile_size = 20
 tile_list = []
 mouse_down = False
 key_down = 1
+
 
 def get_font(size):
     font = pygame.font.SysFont('comicsans', size)
@@ -68,14 +70,13 @@ class player:
         if keys[pygame.K_d]:
             self.vx += self.speed * dt
         # self.updateRect()
-        # text_mid(text(self.vy, get_font(100)), 150)
+        text_mid(text(self.vx, get_font(100)), 150)
         if not self.vx == 0 or not self.vy == 0:
             self.tile_collision(tiles)
 
 
     def tile_collision(self, tiles):
         handle_x.handle_x(self, tiles, tile_size)
-
 
 
 def draw_logs():
@@ -92,12 +93,15 @@ class log:
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         list_of_logs.append(self)
 
+
 def check_logs():
     global list_of_logs
     for instance in list_of_logs:
-        distance = ((player1.rect.centerx - instance.rect.centerx)**2 + (player1.rect.centery - instance.rect.centery)**2)**(1/2)
-        if distance <= player1.size[0]/2 + instance.size/2 - 10:
+        distance = ((player1.rect.centerx - instance.rect.centerx) ** 2 + (
+                    player1.rect.centery - instance.rect.centery) ** 2) ** (1 / 2)
+        if distance <= player1.size[0] / 2 + instance.size / 2 - 10:
             list_of_logs.remove(instance)
+
 
 class tile_objects:
     def __init__(self, x, y):
@@ -105,11 +109,12 @@ class tile_objects:
         self.y = y
         self.size = tile_size
 
+
 def draw_tiles():
     mp = pygame.mouse.get_pos()
-    if mouse_down and mp[0] > 0 and mp[0] <  win_size[0] and mp[1] > 0 and mp[1] < win_size[1]:
+    if mouse_down and 0 < mp[0] < win_size[0] and 0 < mp[1] < win_size[1]:
         mp_loc = (math.floor(mp[0] / tile_size), math.floor(mp[1] / tile_size))
-        tile_coords = (mp_loc[0] * tile_size, mp_loc[1] * tile_size)
+        tile_coords = (mp_loc[0] * tile_size, mp_loc[1] * tile_size, key_down)
         # rect = pygame.Rect(mp_loc[0] * tile_size, mp_loc[1] * tile_size, tile_size, tile_size)
         if not pygame.Rect.colliderect(player1.rect, pygame.Rect(tile_coords[0], tile_coords[1], tile_size, tile_size)):
             if key_down == 1:
@@ -122,8 +127,10 @@ def draw_tiles():
         pygame.draw.rect(win, pygame.Color('green'), pygame.Rect(tile[0], tile[1], tile_size, tile_size))
 
 
+
 player1 = player(200, 200, 50)
 log1 = log(300, 300, 50)
+
 
 # game
 def main(dt):
@@ -143,6 +150,8 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if key_down == 3:
+                    list_of_logs.append(log(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], randint(40, 60)))
                 mouse_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_down = False
@@ -151,6 +160,8 @@ while True:
                     key_down = 1
                 if event.key == pygame.K_2:
                     key_down = 2
+                if event.key == pygame.K_3:
+                    key_down = 3
         win.fill((153, 147, 178))
         main(dt)
         pygame.display.update()
