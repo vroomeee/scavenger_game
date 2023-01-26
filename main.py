@@ -118,13 +118,14 @@ def draw_tiles():
     mp = pygame.mouse.get_pos()
     if mouse_down and 0 < mp[0] < win_size[0] and 0 < mp[1] < win_size[1]:
         mp_loc = (math.floor(mp[0] / tile_size), math.floor(mp[1] / tile_size))
-        tile_coords = (mp_loc[0] * tile_size, mp_loc[1] * tile_size, key_down)
+        tile_coords = [mp_loc[0] * tile_size, mp_loc[1] * tile_size, key_down]
         # rect = pygame.Rect(mp_loc[0] * tile_size, mp_loc[1] * tile_size, tile_size, tile_size)
         if not pygame.Rect.colliderect(player1.rect, pygame.Rect(tile_coords[0], tile_coords[1], tile_size, tile_size)):
             if key_down == 1:
                 if not tile_coords in tile_list:
                     tile_list.append(tile_coords)
             if key_down == 2:
+                tile_coords[2] = 1
                 if tile_coords in tile_list:
                     tile_list.remove(tile_coords)
     for tile in tile_list:
@@ -164,8 +165,8 @@ while True:
                     key_down = 1
                 if event.key == pygame.K_2:
                     key_down = 2
-                # if event.key == pygame.K_3:
-                #     key_down = 3
+                if event.key == pygame.K_3:
+                    key_down = 3
         win.fill((153, 147, 178))
         main(dt)
         pygame.display.update()
