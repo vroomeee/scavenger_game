@@ -39,6 +39,10 @@ def text(text, font):
 def text_mid(main_text, y):
     win.blit(main_text, (win_size[0] / 2 - main_text.get_width() / 2, y))
 
+class bg:
+    def __init__(self):
+        pass
+
 
 class player:
     def __init__(self, x, y, size):
@@ -160,8 +164,8 @@ while True:
                     key_down = 1
                 if event.key == pygame.K_2:
                     key_down = 2
-                if event.key == pygame.K_3:
-                    key_down = 3
+                # if event.key == pygame.K_3:
+                #     key_down = 3
         win.fill((153, 147, 178))
         main(dt)
         pygame.display.update()
