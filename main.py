@@ -45,7 +45,7 @@ class player:
         self.vx = 0
         self.vy = 0
         self.size = [size, size]
-        self.speed = 0.6
+        self.speed = 1
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
         self.settled_x = False
 
@@ -57,21 +57,25 @@ class player:
 
     def movement(self, dt, tiles):
         keys = pygame.key.get_pressed()
+        self.vx = 0
+        self.vy = 0
         if keys[pygame.K_w]:
-            self.vy = -self.speed * dt
+            self.vy += -self.speed * dt
         if keys[pygame.K_s]:
-            self.vy = self.speed * dt
+            self.vy += self.speed * dt
         if keys[pygame.K_a]:
-            self.vx = -self.speed * dt
+            self.vx += -self.speed * dt
         if keys[pygame.K_d]:
-            self.vx = self.speed * dt
+            self.vx += self.speed * dt
         # self.updateRect()
-        if not self.vx == 0:
+        # text_mid(text(self.vy, get_font(100)), 150)
+        if not self.vx == 0 or not self.vy == 0:
             self.tile_collision(tiles)
+
 
     def tile_collision(self, tiles):
         handle_x.handle_x(self, tiles, tile_size)
-        self.updateRect()
+
 
 
 def draw_logs():
@@ -107,6 +111,7 @@ def draw_tiles():
         mp_loc = (math.floor(mp[0] / tile_size), math.floor(mp[1] / tile_size))
         tile_coords = (mp_loc[0] * tile_size, mp_loc[1] * tile_size)
         # rect = pygame.Rect(mp_loc[0] * tile_size, mp_loc[1] * tile_size, tile_size, tile_size)
+        # if not pygame.Rect.colliderect(player1.rect, pygame.Rect(tile_coords[0], tile_coords[1], tile_size, tile_size)):
         if key_down == 1:
             if not tile_coords in tile_list:
                 tile_list.append(tile_coords)
