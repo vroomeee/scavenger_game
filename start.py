@@ -29,8 +29,9 @@ while game_running:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            game_running = False
+            if event.key == pygame.K_SPACE:
+                game_running = False
     win.fill((153, 147, 178))
     text_mid(text("Scavenger", get_font(100)), 150)
-    text_mid(text("press any key to start", get_font(30)), 350)
+    text_mid(text("press space to start", get_font(30)), 350)
     pygame.display.update()

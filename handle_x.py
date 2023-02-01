@@ -8,6 +8,9 @@ vector = 1
 
 
 def handle_x(self, real_tiles, tile_size):
+    prev_x = self.x
+    prev_y = self.y
+
     global vector, x, y
     self.settled_x = False
     for tile in real_tiles:
@@ -24,6 +27,7 @@ def handle_x(self, real_tiles, tile_size):
                 self.rect.x = tile[0] + tile_size
             break
     self.x = self.rect.x
+    # self.rect.x = prev_x
     self.rect.y += self.vy
     for tile in real_tiles:
         if pygame.Rect.colliderect(self.rect, pygame.Rect(tile[0], tile[1], tile_size, tile_size)):
@@ -33,6 +37,7 @@ def handle_x(self, real_tiles, tile_size):
                 self.rect.y = tile[1] + tile_size
             break
     self.y = self.rect.y
+    # self.rect.y = prev_y
     #     self.on_floor = False
     #     former_x = self.rect.x
 
