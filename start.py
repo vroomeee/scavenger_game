@@ -6,8 +6,8 @@ pygame.init()
 pygame.font.init()
 
 win_size = (800, 600)
-win = pygame.display.set_mode(win_size)
-render = pygame.Surface(win_size)
+win = pygame.Surface(win_size)
+render = pygame.display.set_mode((1200, 900))
 pygame.display.set_caption("Scavenger")
 # renders = pygame.Surface(render_screen_size)
 
@@ -34,4 +34,5 @@ while game_running:
     win.fill((153, 147, 178))
     text_mid(text("Scavenger", get_font(100)), 150)
     text_mid(text("press space to start", get_font(30)), 350)
+    render.blit(pygame.transform.scale(win, (1200, 900)), (0, 0))
     pygame.display.update()

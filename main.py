@@ -10,9 +10,7 @@ pygame.font.init()
 clock = pygame.time.Clock()
 
 win_size = (800, 600)
-win = pygame.display.set_mode(win_size)
-# render = pygame.display.set_mode(win_size)
-pygame.display.set_caption("Scavenger")
+
 # renders = pygame.Surface(render_screen_size)
 # actual display
 
@@ -84,7 +82,7 @@ class player:
         self.updateRect()
 
     def tile_collision(self, tiles):
-        handle_x.handle_x(self, tiles, tile_size)
+        handle_x.handle_x(self, tiles, tile_size, win_size)
 
 
 def draw_logs():
@@ -146,6 +144,7 @@ log1.add()
 
 
 
+
 # game
 def main(dt):
     draw_logs()
@@ -158,6 +157,9 @@ def main(dt):
 # basic game loop
 while True:
     import start
+    win = pygame.Surface(win_size)
+    render = pygame.display.set_mode((1200, 900))
+    pygame.display.set_caption("Scavenger")
     player1.x = 200
     player1.y = 200
     while game_running:
@@ -186,5 +188,6 @@ while True:
                     tile_list.clear()
         win.fill((153, 147, 178))
         main(dt)
+        render.blit(pygame.transform.scale(win, (1200, 900)), (0, 0))
         # render.blit(win, (player1.x, player1.y))
         pygame.display.update()
