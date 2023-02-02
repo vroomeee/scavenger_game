@@ -14,6 +14,7 @@ def handle_x(self, real_tiles, tile_size, win_size):
     global vector, x, y
     self.settled_x = False
     for tile in real_tiles:
+        # print(real_tiles)
         if pygame.Rect.colliderect(self.rect, pygame.Rect(tile[0], tile[1], tile_size, tile_size)):
             self.rect.x += self.vx
             self.rect.y += self.vy

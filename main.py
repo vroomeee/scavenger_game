@@ -4,6 +4,7 @@ import sys
 import math
 import handle_x
 from random import randint
+import time
 
 pygame.init()
 pygame.font.init()
@@ -41,6 +42,54 @@ class bg:
     def __init__(self):
         pass
 
+class spawn_en:
+    def __init__(self):
+        self.st = time.time()
+        self.enemy_size = 30
+        self.enemies = []
+        self.enemyd = 50
+    def spawn(self):
+        if time.time() - self.st > 1/wave_num * 3 and False:
+            self.st = time.time()
+            self.SpawnEnemy()
+            list_of_logs.append(log(pygame.mouse.get_pos()[0] / 1.5, pygame.mouse.get_pos()[1] / 1.5, randint(40, 60)))
+    def SpawnEnemy(self):
+        while True:
+            randomx = randint(0, win_size[0])
+            if player1.x - self.enemyd < randomx < player1.x + self.enemyd:
+                pass
+            else:
+                if 0 < randomx < win_size[1] - self.enemy_size:
+                    break
+        while True:
+            randomy = randint(0, win_size[1])
+            if player1.y - self.enemyd < randomy < player1.y + self.enemyd:
+                pass
+            else:
+                if 0 < randomy < win_size[1] - self.enemy_size:
+                    break
+        self.enemies.append((randomx, randomy))
+    def DrawEnemy(self):
+        for instance_enemy in self.enemies:
+            pygame.draw.rect(win, pygame.Color("red"), pygame.Rect(instance_enemy[0], instance_enemy[1], self.enemy_size, self.enemy_size))
+
+
+
+wave_num = 1
+wave_times = [0, 10, 30, 60]
+ENEMYSYS = spawn_en()
+def waves():
+    global wave_num
+    ct = time.time()
+    for i in range(0, len(wave_times) - 1):
+        if wave_times[i] < ct < wave_times[i+1]:
+            wave_num = i + 1
+            break
+    ENEMYSYS.spawn()
+    ENEMYSYS.DrawEnemy()
+
+
+collision_list = []
 
 class player:
     def __init__(self, x, y, size):
@@ -49,7 +98,7 @@ class player:
         self.vx = 0
         self.vy = 0
         self.size = [size, size]
-        self.speed = 1
+        self.speed = 0.5
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
         self.settled_x = False
         self.log = 0
@@ -73,7 +122,7 @@ class player:
         if keys[pygame.K_d]:
             self.vx += self.speed * dt
         # self.updateRect()
-        text_mid(text(self.log, get_font(100)), 150)
+        text_mid(text([self.vx, self.vy], get_font(100)), 150)
         if not self.vx == 0 or not self.vy == 0:
             self.tile_collision(tiles)
     def reset(self):
@@ -82,7 +131,8 @@ class player:
         self.updateRect()
 
     def tile_collision(self, tiles):
-        handle_x.handle_x(self, tiles, tile_size, win_size)
+        collision_list = ENEMYSYS.enemies + tiles
+        handle_x.handle_x(self, collision_list, tile_size, win_size)
 
 
 def draw_logs():
@@ -108,7 +158,6 @@ def check_logs():
                     player1.rect.centery - instance.rect.centery) ** 2) ** (1 / 2)
         if distance <= player1.size[0] / 2 + instance.size / 2 - 10:
             list_of_logs.remove(instance)
-            print(1)
             player1.log += 1
 
 
@@ -120,7 +169,7 @@ class tile_objects:
 
 
 def draw_tiles():
-    mp = pygame.mouse.get_pos()
+    mp = (pygame.mouse.get_pos()[0] / 1.5, pygame.mouse.get_pos()[1] / 1.5)
     if mouse_down and 0 < mp[0] < win_size[0] and 0 < mp[1] < win_size[1]:
         mp_loc = (math.floor(mp[0] / tile_size), math.floor(mp[1] / tile_size))
         tile_coords = [mp_loc[0] * tile_size, mp_loc[1] * tile_size, key_down]
@@ -144,15 +193,14 @@ log1.add()
 
 
 
-
 # game
 def main(dt):
-    draw_logs()
     player1.movement(dt, tile_list)
     player1.draw()
     draw_tiles()
+    draw_logs()
     check_logs()
-
+    waves()
 
 # basic game loop
 while True:
@@ -162,17 +210,16 @@ while True:
     pygame.display.set_caption("Scavenger")
     player1.x = 200
     player1.y = 200
+    st = time.time()
     while game_running:
-        dt = clock.tick()
+        dt = clock.tick(480)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if key_down == 3:
-                    print(len(list_of_logs))
-                    list_of_logs.append(log(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], randint(40, 60)))
-                    print(len(list_of_logs))
+                    list_of_logs.append(log(pygame.mouse.get_pos()[0] / 1.5, pygame.mouse.get_pos()[1] / 1.5, randint(40, 60)))
                 mouse_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_down = False
@@ -186,6 +233,7 @@ while True:
                 if event.key == pygame.K_r:
                     player1.reset()
                     tile_list.clear()
+                    ENEMYSYS.enemies.clear()
         win.fill((153, 147, 178))
         main(dt)
         render.blit(pygame.transform.scale(win, (1200, 900)), (0, 0))
