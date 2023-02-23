@@ -48,8 +48,9 @@ class spawn_en:
         self.enemy_size = 30
         self.enemies = []
         self.enemyd = 50
+        self.speed = 0.3
     def spawn(self):
-        if time.time() - self.st > 1/wave_num * 3 and False:
+        if time.time() - self.st > 1/wave_num * 3:
             self.st = time.time()
             self.SpawnEnemy()
             list_of_logs.append(log(pygame.mouse.get_pos()[0] / 1.5, pygame.mouse.get_pos()[1] / 1.5, randint(40, 60)))
@@ -72,6 +73,19 @@ class spawn_en:
     def DrawEnemy(self):
         for instance_enemy in self.enemies:
             pygame.draw.rect(win, pygame.Color("red"), pygame.Rect(instance_enemy[0], instance_enemy[1], self.enemy_size, self.enemy_size))
+    def EnemyFollow(self):
+        for instance in self.enemies:
+            settled_x = False
+            settled_y = False
+            dx = abs(player1.centerx - instance[0] - self.enemy_size/2)
+            dy = abs(player1.centery - instance[1] - self.enemy_size/2)
+            if dx < self.speed:
+                instance[0] = player1.centerx
+                break
+                #CURRENTLY WORKING HERE
+
+
+
 
 
 
@@ -122,7 +136,7 @@ class player:
         if keys[pygame.K_d]:
             self.vx += self.speed * dt
         # self.updateRect()
-        text_mid(text([self.vx, self.vy], get_font(100)), 150)
+        # text_mid(text([self.vx, self.vy], get_font(100)), 150)
         if not self.vx == 0 or not self.vy == 0:
             self.tile_collision(tiles)
     def reset(self):
